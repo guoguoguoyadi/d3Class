@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<script type="text/javascript" src="dist/d3.v4.min.js">
+</script>
+ <style>
+table {
+        border-spacing: 0px;
+        font-family: 'Roboto Condensed', serif;
+        font-size: 90%;
+        margin: 50px 180px;
+		border-right:1px solid #E3E5E6;
+		border-bottom:1px solid #E3E5E6;
+      }
+      th {
+        cursor: pointer;
+      }
+
+      th, td {
+        padding: 2px 10px 2px 5px;
+        text-align: center;
+        border-top: 1px solid #E3E5E6;
+		border-left: 1px solid #E3E5E6;
+
+		
+      }
+      .intro{
+        margin-top: 30px;
+      }
+
+      .wrapper{
+        width: 940px;
+        margin: 40px auto 40px auto;
+      }
+
+      h1 {
+        font-family: 'Lora', serif;
+      }
+
+      p {
+        font-family: 'Lora', serif;
+        font-size: 90%;
+      }
+    </style>
+</head>
+
+<body>
+ <div class='wrapper'>
+      <h1>Mortality Rate, Infant (per 1,000 live births)</h1>
+      <div class="intro">
+        <p>Infant mortality rate is the number of infants dying before reaching one year of age, per 1,000 live births in a given year.</p>
+        <p>Estimates developed by the UN Inter-agency Group for Child Mortality Estimation (UNICEF, WHO, World Bank, UN DESA Population Division) at www.childmortality.org.</p>
+      </div>
+      <div id="table"></div>
+    </div><!-- warpper -->
+<script type="text/javascript">
+			
+//d3.csv("list.csv",function(data){
+		//console.log(data);});
+d3.csv("volleyball.csv", function(error, data){
+    if (error) throw error;
+    console.log(data);
+   // prepare data
+    var matrix = [];
+    data.forEach(function(d,i){
+      d.age = +d.age;
+	  d.height = +d.height;
+	  d.weight = +d.weight;
+	  d.BMI = (d.weight/(d.height*d.height)).toFixed(0);
+      matrix.push([d.country,d.name, d.height,d.age, d.weight
+,d.BMI])
+    })
+    // sort data
+    // 方法1
+    matrix.sort(function(a,b){
+      return b[2] - a[2];
+    })
+    // 方法2
+   // matrix.sort(function(d){
+    // return d3.ascending(d[0]);
+    // })
+    console.log(matrix)
+    // select and give data to t-rows
+    var body = d3.select("body");
+    var table = body.append("table");
+    var tr = table.selectAll("tr")
+      .data(matrix)
+      .enter()
+      .append("tr");
+    // select and give data to t-data
+    var td = tr.selectAll("td")
+      .data(function(d) { return d; })
+      .enter()
+      .append("td")
+      .text(function(d){ return d; });
+    //  and then, build the t-head
+    var thead = table.append("thead").append("tr");
+    var thead_array = ["国家","姓名","身高","年龄","体重","IBM指数"];
+    thead
+      .selectAll("th")
+      .data(thead_array)
+      .enter()
+      .append("th")
+      .text(function(d){ return d; })
+      .style('color', 'grey')
+      .style('width', '200px'); 
+	  
+	  data[0].style("background-color", function(d,i) {
+              if (i == "China") {
+                return "red";
+              }
+            })
+    })
+</script>
+</body>
+</html>
